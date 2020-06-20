@@ -1,0 +1,22 @@
+{
+  "name": "borisshapa/chess",
+  "authors": [
+    {
+      "name": "Boris Shaposhnikov",
+      "email": "bshaposhnikov01@gmail.com"
+    }
+  ],
+  "require": {
+    "ext-pdo": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "api\\": "api",
+      "app\\": "app"
+    },
+    "files": [
+      "app/config.php",
+      "app/routes.php"
+    ]
+  }
+}

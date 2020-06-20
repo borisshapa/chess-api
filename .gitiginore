@@ -1,1 +1,4 @@
 /.idea
+/src/test.php
+/vendor/
+/composer.json
