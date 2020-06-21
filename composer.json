@@ -7,7 +7,9 @@
     }
   ],
   "require": {
-    "ext-pdo": "*"
+    "ext-pdo": "*",
+    "ext-json": "*",
+    "ext-mbstring": "*"
   },
   "autoload": {
     "psr-4": {
@@ -16,7 +18,7 @@
     },
     "files": [
       "app/config.php",
-      "app/routes.php"
+      "app/Routes.php"
     ]
   }
 }

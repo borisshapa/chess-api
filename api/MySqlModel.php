@@ -29,7 +29,7 @@ class MySqlModel extends Model
         $query->execute();
     }
 
-    public function create($fields)
+    public function create($fields) : int
     {
         $keysArray = array_keys($fields);
         $keys = implode(", ", $keysArray);
@@ -39,11 +39,10 @@ class MySqlModel extends Model
         $query = $this->connection->prepare("INSERT INTO `{$this->table}` ({$keys}) VALUES ($placeholders)");
 
         foreach ($fields as $key => &$field) {
-            var_dump($field);
             $query->bindParam(":$key", $field);
         }
-        var_dump($query->queryString);
         $query->execute();
+        return $this->connection->lastInsertId();
     }
 
     public function all()
@@ -61,6 +60,7 @@ class MySqlModel extends Model
 
     public function delete($id)
     {
-        // TODO: Implement delete() method.
+        $query = $this->connection->query("DELETE FROM  `{$this->table}` WHERE {$this->getIdField()} = $id");
+        $query->execute();
     }
 }

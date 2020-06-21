@@ -19,7 +19,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '93c5bdd2e64efe62d92df102a07d0ac79372a040',
+    'reference' => 'ca88dda8307ff8d1aa121796f1ce9636e2b8391b',
     'name' => 'borisshapa/chess',
   ),
   'versions' => 
@@ -31,7 +31,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '93c5bdd2e64efe62d92df102a07d0ac79372a040',
+      'reference' => 'ca88dda8307ff8d1aa121796f1ce9636e2b8391b',
     ),
   ),
 );

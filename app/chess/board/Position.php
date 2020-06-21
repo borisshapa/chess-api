@@ -2,22 +2,14 @@
 
 namespace app\chess\board;
 
-class Position {
-    private $row;
-    private $col;
 
-    public function __construct(int $row, int $col)
-    {
-        $this->row = $row;
-        $this->col = $col;
-    }
-
+class Position extends Pair {
     /**
      * @return int
      */
     public function getRow(): int
     {
-        return $this->row;
+        return $this->getFirst();
     }
 
     /**
@@ -25,6 +17,6 @@ class Position {
      */
     public function getCol(): int
     {
-        return $this->col;
+        return $this->getSecond();
     }
 }

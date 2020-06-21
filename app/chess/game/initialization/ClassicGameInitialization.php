@@ -62,7 +62,7 @@ class ClassicGameInitialization implements GameInitialization
         }
     }
 
-    private function addPawns(Player &$player, Board $board)
+    private function addPawns(Player &$player, Board &$board)
     {
         for ($col = 0; $col < self::BOARD_SIDE; $col++) {
             $pawn = new Pawn($player->getColor());

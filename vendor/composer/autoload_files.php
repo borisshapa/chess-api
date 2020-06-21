@@ -7,5 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     '3c9d0c92adc56932526e50227756f4d3' => $baseDir . '/app/config.php',
-    '13587c361c449c03a76baebb5f551d44' => $baseDir . '/app/routes.php',
+    'f0c69ae7909e53da80b78e55833a8db3' => $baseDir . '/app/Routes.php',
 );

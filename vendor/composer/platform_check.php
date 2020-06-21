@@ -5,6 +5,8 @@
 $issues = array();
 
 $missingExtensions = array();
+extension_loaded('json') || $missingExtensions[] = 'json';
+extension_loaded('mbstring') || $missingExtensions[] = 'mbstring';
 extension_loaded('pdo') || $missingExtensions[] = 'pdo';
 
 if ($missingExtensions) {

@@ -18,7 +18,6 @@ class Router
     {
         $execRoute = null;
         foreach (self::$routes as $route) {
-            echo preg_match($route->getPath(), $this->request->getPath());
             if (preg_match($route->getPath(), $this->request->getPath())
                 && $route->getType() == $this->request->getType()) {
                 $execRoute = $route;
@@ -31,13 +30,12 @@ class Router
                 $controllerName = "app\mvc\controllers\\" . $action[0];
                 $methodName = $action[1];
 
-                echo $controllerName;
                 $controller = new $controllerName();
 
                 if (method_exists($controller, $methodName)) {
                     $rm = new \ReflectionMethod($controllerName, $methodName);
                     $params = $this->request->getGetParams();
-                    var_dump($params);
+                    // TODO for post params
                     return $rm->invokeArgs($controller, $params);
                 }
                 return "Method " . $methodName . " not found";

@@ -1,13 +1,13 @@
 <?php
 
-namespace app\chess\move;
+namespace app\chess\moves;
 
 use app\chess\board\Position;
 
 class Move
 {
-    private Position $from;
-    private Position $to;
+    private $from;
+    private $to;
 
     public function __construct(Position $from, Position $to)
     {

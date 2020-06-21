@@ -14,7 +14,7 @@ abstract class Model
 
     public abstract function updateById($id, $data);
 
-    public abstract function create($fields);
+    public abstract function create($fields) : int;
 
     protected function getIdField() {
         return "id";
