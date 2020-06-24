@@ -7,17 +7,32 @@ namespace api;
 use api\exceptions\DatabaseAccessException;
 use app\MySqlConnection;
 
+/**
+ * Class MySqlModel
+ * Work with MySql database table.
+ * @package api
+ */
 class MySqlModel extends Model
 {
-    protected $table;
-    protected $connection;
+    /**
+     * @var string the name of MySql database table that queries are accessing.
+     */
+    protected string $table;
 
+    /**
+     * @var MySqlConnection|mixed|\PDO connection to the MySql database.
+     */
+    protected MySqlConnection $connection;
+
+    /**
+     * MySqlModel constructor.
+     */
     public function __construct()
     {
         $this->connection = MySqlConnection::getConnection();
     }
 
-    public function updateById($id, $data)
+    public function updateById(int $id, $data): void
     {
         $dataStr = implode(", ", array_map(function ($key) use ($data) {
             return "`$key` = :$key";
@@ -30,7 +45,7 @@ class MySqlModel extends Model
         $query->execute();
     }
 
-    public function create($fields) : int
+    public function create(array $fields): int
     {
         $keysArray = array_keys($fields);
         $keys = implode(", ", $keysArray);
@@ -46,13 +61,13 @@ class MySqlModel extends Model
         return $this->connection->lastInsertId();
     }
 
-    public function all()
+    public function all(): array
     {
         $query = $this->connection->query("SELECT * FROM `{$this->table}`");
         return $query->fetchAll(\PDO::FETCH_CLASS);
     }
 
-    public function getById($id)
+    public function getById(int $id)
     {
         $query = $this->connection->prepare("SELECT * FROM `{$this->table}` WHERE {$this->getIdField()} = $id");
         $query->execute();
@@ -63,7 +78,7 @@ class MySqlModel extends Model
         return $fetch[0];
     }
 
-    public function delete($id)
+    public function delete(int $id): void
     {
         $query = $this->connection->query("DELETE FROM  `{$this->table}` WHERE {$this->getIdField()} = $id");
         $query->execute();
