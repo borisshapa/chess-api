@@ -13,12 +13,13 @@
   },
   "autoload": {
     "psr-4": {
-      "api\\": "api",
-      "app\\": "app"
-    },
-    "files": [
-      "app/config.php",
-      "app/Routes.php"
-    ]
+      "api\\": "src/api/",
+      "app\\": "src/app/",
+      "utils\\": "src/utils",
+      "tests\\": "tests"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9"
   }
 }
