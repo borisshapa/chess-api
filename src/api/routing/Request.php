@@ -3,13 +3,22 @@
 
 namespace api\routing;
 
-
+/**
+ * Class Request
+ * Data about the request received by api
+ * @package api\routing
+ * @see Route
+ * @see Router
+ */
 class Request
 {
     private string $path;
     private array $params;
     private int $type;
 
+    /**
+     * Request constructor.
+     */
     public function __construct()
     {
         $this->path = $_GET["path"];
@@ -34,7 +43,7 @@ class Request
     }
 
     /**
-     * @return mixed
+     * @return string request path
      */
     public function getPath(): string
     {
@@ -42,7 +51,7 @@ class Request
     }
 
     /**
-     * @return array
+     * @return array GET parameters without 'path' if the request is GET, PUT or DELTE-request, POST parameters if the request is POST
      */
     public function getParams(): array
     {
@@ -50,7 +59,13 @@ class Request
     }
 
     /**
-     * @return int
+     * @return int information about request type
+     * - 1 — GET
+     * - 2 — POST
+     * - 3 — PUT
+     * - 4 — DELETE
+     *
+     * @see Route
      */
     public function getType(): int
     {
