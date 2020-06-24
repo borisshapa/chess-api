@@ -37,7 +37,7 @@ abstract class AbstractPiece implements Piece
 
     protected static function checkColor(Piece $piece, Color $color)
     {
-        return $piece->getColor() === $color;
+        return $piece->getColor() == $color;
     }
 
     protected function longNormalMoves(Board $board, Position $position, array $singleMoves): array

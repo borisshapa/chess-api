@@ -140,7 +140,7 @@ abstract class AbstractRectangularBoard implements Board
                 $pos = new Position($row, $col);
                 if ($this->isPositionOccupied($pos)) {
                     $piece = $this->getPiece($pos);
-                    if ($piece->getColor() === $color && $piece instanceof $pieceClass) {
+                    if ($piece->getColor() == $color && $piece instanceof $pieceClass) {
                         return $pos;
                     }
                 }

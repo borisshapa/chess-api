@@ -6,31 +6,37 @@ namespace api\routing;
 
 class Request
 {
-    private $path;
-    private $getParams;
-    private $postParams;
-    private $type;
+    private string $path;
+    private array $params;
+    private int $type;
 
     public function __construct()
     {
-        $this->path = $_GET['path'];
-        $this->getParams = $_GET;
-        unset($this->getParams['path']);
-        $this->postParams = $_POST;
+        $this->path = $_GET["path"];
+        $this->params = $_GET;
+        unset($this->params["path"]);
 
-        $requestMethod = $_SERVER['REQUEST_METHOD'];
-        if ($requestMethod === 'POST') {
-            $this->type = Route::METHOD_POST;
-        }
-        if ($requestMethod === 'GET') {
-            $this->type = Route::METHOD_GET;
+        switch ($_SERVER["REQUEST_METHOD"]) {
+            case "POST":
+                $this->type = Route::METHOD_POST;
+                $this->params = $_POST;
+                break;
+            case "GET":
+                $this->type = Route::METHOD_GET;
+                break;
+            case "PUT":
+                $this->type = Route::METHOD_PUT;
+                break;
+            case "DELETE":
+                $this->type = Route::METHOD_DELETE;
+                break;
         }
     }
 
     /**
      * @return mixed
      */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }
@@ -38,17 +44,9 @@ class Request
     /**
      * @return array
      */
-    public function getGetParams(): array
+    public function getParams(): array
     {
-        return $this->getParams;
-    }
-
-    /**
-     * @return array
-     */
-    public function getPostParams(): array
-    {
-        return $this->postParams;
+        return $this->params;
     }
 
     /**

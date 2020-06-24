@@ -13,9 +13,8 @@ class Queen extends AbstractPiece
     private static array $rooks;
     private static array $bishops;
 
-    public function __construct(Color $color)
+    public function addColor(Color $color)
     {
-        parent::__construct($color);
         $colorName = $color->getName();
         $rook = &self::$rooks[$colorName];
         $bishop = &self::$bishops[$colorName];
@@ -35,14 +34,20 @@ class Queen extends AbstractPiece
 
     public function attackedMoves(Board $board, Position $position): array
     {
-        $colorName = $this->color->getName();
+        $color = $this->color;
+        $this->addColor($color);
+
+        $colorName = $color->getName();
         return array_merge(self::$rooks[$colorName]->attackedMoves($board, $position),
             self::$bishops[$colorName]->attackedMoves($board, $position));
     }
 
     public function normalMoves(Board $board, Position $position): array
     {
-        $colorName = $this->color->getName();
+        $color = $this->color;
+        $this->addColor($color);
+
+        $colorName = $color->getName();
         return array_merge(self::$rooks[$colorName]->normalMoves($board, $position),
             self::$bishops[$colorName]->normalMoves($board, $position));
     }

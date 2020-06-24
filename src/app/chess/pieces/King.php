@@ -6,19 +6,18 @@ namespace app\chess\pieces;
 use app\chess\board\Board;
 use app\chess\board\Position;
 use app\chess\Color;
-use utils\IntPair;
+use utils\Pair;
 
 class King extends AbstractPiece
 {
     private static ?array $SINGLE_MOVES = null;
 
-    public function __construct(Color $color)
+    public static function init(): void
     {
-        parent::__construct($color);
         if (self::$SINGLE_MOVES == null) {
             self::$SINGLE_MOVES = array(
-                new IntPair(1, 0), new IntPair(1, 1), new IntPair(1, -1), new IntPair(0, 1),
-                new IntPair(0, -1), new IntPair(-1, 1), new IntPair(-1, 0), new IntPair(-1, -1)
+                new Pair(1, 0), new Pair(1, 1), new Pair(1, -1), new Pair(0, 1),
+                new Pair(0, -1), new Pair(-1, 1), new Pair(-1, 0), new Pair(-1, -1)
             );
         }
     }
@@ -52,3 +51,5 @@ class King extends AbstractPiece
         return $possibleMoves;
     }
 }
+
+King::init();

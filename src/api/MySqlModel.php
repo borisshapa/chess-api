@@ -4,6 +4,7 @@
 namespace api;
 
 
+use api\exceptions\DatabaseAccessException;
 use app\MySqlConnection;
 
 class MySqlModel extends Model
@@ -55,7 +56,11 @@ class MySqlModel extends Model
     {
         $query = $this->connection->prepare("SELECT * FROM `{$this->table}` WHERE {$this->getIdField()} = $id");
         $query->execute();
-        return $query->fetchAll(\PDO::FETCH_CLASS)[0];
+        $fetch = $query->fetchAll(\PDO::FETCH_CLASS);
+        if (count($fetch) < 1) {
+            throw new DatabaseAccessException("There is not model with {$id} id in the database");
+        }
+        return $fetch[0];
     }
 
     public function delete($id)

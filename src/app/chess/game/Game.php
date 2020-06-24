@@ -13,5 +13,5 @@ interface Game
 
     public function move(Move $move): void;
 
-    public function hasColorWon(Color $color): bool;
+    public function checkIfColorWon(Color $color): bool;
 }

@@ -2,7 +2,7 @@
 
 namespace api;
 
-class Controller
+interface Controller
 {
-
+    // Marker Interface
 }

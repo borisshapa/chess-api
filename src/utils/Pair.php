@@ -5,12 +5,12 @@ namespace utils;
 
 
 // TODO rename to int pair
-class IntPair
+class Pair
 {
     private $first;
     private $second;
 
-    public function __construct(int $first, int $second)
+    public function __construct($first, $second)
     {
         $this->first = $first;
         $this->second = $second;
@@ -19,7 +19,7 @@ class IntPair
     /**
      * @return mixed
      */
-    public function getFirst() : int
+    public function getFirst()
     {
         return $this->first;
     }
@@ -27,7 +27,7 @@ class IntPair
     /**
      * @return mixed
      */
-    public function getSecond() : int
+    public function getSecond()
     {
         return $this->second;
     }

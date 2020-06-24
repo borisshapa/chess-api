@@ -40,15 +40,15 @@ class ChessEngineTest extends TestCase
         self::$classicGameInitialization = ClassicGameInitialization::getInstance();
     }
 
-    private function assertBoardsEquals(array $epxpectedBoard, Board $board): void
+    private static function assertBoardsEquals(array $epxpectedBoard, Board $board): void
     {
-        $this->assertEquals(count($epxpectedBoard), $board->getRows());
+        self::assertEquals(count($epxpectedBoard), $board->getRows());
         for ($row = 0; $row < $board->getRows(); $row++) {
-            $this->assertEquals(count($epxpectedBoard[$row]), $board->getCols());
+            self::assertEquals(count($epxpectedBoard[$row]), $board->getCols());
             for ($col = 0; $col < $board->getCols(); $col++) {
                 $piece = $board->getPiece(new Position($row, $col)) ?? null;
                 $pieceStr = isset($piece) ? strval($piece) : "__";
-                $this->assertEquals($epxpectedBoard[$row][$col], $pieceStr);
+                self::assertEquals($epxpectedBoard[$row][$col], $pieceStr);
             }
         }
     }
@@ -72,34 +72,24 @@ class ChessEngineTest extends TestCase
         }
     }
 
-    public function testPlayers(): void
+    public static function testPlayers(): void
     {
         $game = self::createClassicGame();
         $game->move(self::$e2e4Move);
 
-        $this->assertContains(self::$player1, $game->getPlayers());
-        $this->assertContains(self::$player2, $game->getPlayers());
+        self::assertContains(self::$player1, $game->getPlayers());
+        self::assertContains(self::$player2, $game->getPlayers());
     }
 
-    public function testPawnMove(): void
+    public static function testPawnMove(): void
     {
         $game = self::createClassicGame();
         $game->move(self::$e2e4Move);
 
-        $board = [
-            ["BR", "BN", "BB", "BQ", "BK", "BB", "BN", "BR"],
-            ["BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP"],
-            ["__", "__", "__", "__", "__", "__", "__", "__"],
-            ["__", "__", "__", "__", "__", "__", "__", "__"],
-            ["__", "__", "__", "__", "WP", "__", "__", "__"],
-            ["__", "__", "__", "__", "__", "__", "__", "__"],
-            ["WP", "WP", "WP", "WP", "__", "WP", "WP", "WP"],
-            ["WR", "WN", "WB", "WQ", "WK", "WB", "WN", "WR"]
-        ];
-        $this->assertBoardsEquals($board, $game->getBoard(),);
+        self::assertBoardsEquals(PAWN_MOVE_BOARD, $game->getBoard(),);
     }
 
-    public function testRookMove(): void
+    public static function testRookMove(): void
     {
         $game = self::createClassicGame();
 
@@ -109,40 +99,20 @@ class ChessEngineTest extends TestCase
                 self::getMove(1, 2, 2, 2),
                 self::getMove(7, 7, 5, 7)
             ));
-        $board = [
-            ["BR", "BN", "BB", "BQ", "BK", "BB", "BN", "BR"],
-            ["BP", "BP", "__", "BP", "BP", "BP", "BP", "BP"],
-            ["__", "__", "BP", "__", "__", "__", "__", "__"],
-            ["__", "__", "__", "__", "__", "__", "__", "__"],
-            ["__", "__", "__", "__", "__", "__", "__", "WP"],
-            ["__", "__", "__", "__", "__", "__", "__", "WR"],
-            ["WP", "WP", "WP", "WP", "WP", "WP", "WP", "__"],
-            ["WR", "WN", "WB", "WQ", "WK", "WB", "WN", "__"]
-        ];
 
-        $this->assertBoardsEquals($board, $game->getBoard(),);
+        self::assertBoardsEquals(ROOK_MOVE_BOARD, $game->getBoard(),);
     }
 
-    public function testKnightMove(): void
+    public static function testKnightMove(): void
     {
         $game = self::createClassicGame();
 
         $game->move(self::getMove(7, 1, 5, 2));
-        $board = [
-            ["BR", "BN", "BB", "BQ", "BK", "BB", "BN", "BR"],
-            ["BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP"],
-            ["__", "__", "__", "__", "__", "__", "__", "__"],
-            ["__", "__", "__", "__", "__", "__", "__", "__"],
-            ["__", "__", "__", "__", "__", "__", "__", "__"],
-            ["__", "__", "WN", "__", "__", "__", "__", "__"],
-            ["WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP"],
-            ["WR", "__", "WB", "WQ", "WK", "WB", "WN", "WR"]
-        ];
 
-        $this->assertBoardsEquals($board, $game->getBoard(),);
+        self::assertBoardsEquals(KNIGHT_MOVE_BOARD, $game->getBoard(),);
     }
 
-    public function testBishopMove(): void
+    public static function testBishopMove(): void
     {
         $game = self::createClassicGame();
 
@@ -153,21 +123,11 @@ class ChessEngineTest extends TestCase
                 self::getMove(6, 6, 4, 6),
                 self::getMove(0, 2, 4, 6)
             ));
-        $board = [
-            ["BR", "BN", "__", "BQ", "BK", "BB", "BN", "BR"],
-            ["BP", "BP", "BP", "__", "BP", "BP", "BP", "BP"],
-            ["__", "__", "__", "BP", "__", "__", "__", "__"],
-            ["__", "__", "__", "__", "__", "__", "__", "__"],
-            ["__", "__", "__", "__", "__", "__", "BB", "__"],
-            ["__", "__", "WN", "__", "__", "__", "__", "__"],
-            ["WP", "WP", "WP", "WP", "WP", "WP", "__", "WP"],
-            ["WR", "__", "WB", "WQ", "WK", "WB", "WN", "WR"]
-        ];
 
-        $this->assertBoardsEquals($board, $game->getBoard(),);
+        self::assertBoardsEquals(BISHOP_MOVE_BOARD, $game->getBoard(),);
     }
 
-    public function testQueenMove(): void
+    public static function testQueenMove(): void
     {
         $game = self::createClassicGame();
 
@@ -179,21 +139,10 @@ class ChessEngineTest extends TestCase
                 self::getMove(0, 3, 3, 3)
             ));
 
-        $board = [
-            ["BR", "BN", "BB", "__", "BK", "BB", "BN", "BR"],
-            ["BP", "BP", "BP", "__", "BP", "BP", "BP", "BP"],
-            ["__", "__", "__", "__", "__", "__", "__", "__"],
-            ["__", "__", "__", "BQ", "__", "__", "__", "__"],
-            ["__", "__", "__", "__", "__", "__", "__", "__"],
-            ["__", "__", "__", "__", "__", "__", "__", "__"],
-            ["WP", "WP", "WP", "WP", "__", "WP", "WP", "WP"],
-            ["WR", "WN", "WB", "WQ", "WK", "WB", "WN", "WR"]
-        ];
-
-        $this->assertBoardsEquals($board, $game->getBoard());
+        self::assertBoardsEquals(QUEEN_MOVE_BOARD, $game->getBoard());
     }
 
-    public function testKingMove(): void
+    public static function testKingMove(): void
     {
         $game = self::createClassicGame();
 
@@ -204,21 +153,10 @@ class ChessEngineTest extends TestCase
                 self::getMove(7, 4, 6, 3)
             ));
 
-        $board = [
-            ["BR", "BN", "BB", "BQ", "BK", "BB", "BN", "BR"],
-            ["BP", "BP", "BP", "__", "BP", "BP", "BP", "BP"],
-            ["__", "__", "__", "__", "__", "__", "__", "__"],
-            ["__", "__", "__", "BP", "__", "__", "__", "__"],
-            ["__", "__", "__", "WP", "__", "__", "__", "__"],
-            ["__", "__", "__", "__", "__", "__", "__", "__"],
-            ["WP", "WP", "WP", "WK", "WP", "WP", "WP", "WP"],
-            ["WR", "WN", "WB", "WQ", "__", "WB", "WN", "WR"]
-        ];
-
-        $this->assertBoardsEquals($board, $game->getBoard());
+        self::assertBoardsEquals(KING_MOVE_BOARD, $game->getBoard());
     }
 
-    public function testKidsCheckmate(): void
+    public static function testKidsCheckmate(): void
     {
         $game = self::createClassicGame();
 
@@ -233,22 +171,11 @@ class ChessEngineTest extends TestCase
                 self::getMove(3, 7, 1, 5)
             ));
 
-        $board = [
-            ["BR", "__", "BB", "BQ", "BK", "BB", "__", "BR"],
-            ["BP", "BP", "BP", "BP", "__", "WQ", "BP", "BP"],
-            ["__", "__", "BN", "__", "__", "BN", "__", "__"],
-            ["__", "__", "__", "__", "BP", "__", "__", "__"],
-            ["__", "__", "WB", "__", "WP", "__", "__", "__"],
-            ["__", "__", "__", "__", "__", "__", "__", "__"],
-            ["WP", "WP", "WP", "WP", "__", "WP", "WP", "WP"],
-            ["WR", "WN", "WB", "__", "WK", "__", "WN", "WR"]
-        ];
-
-        $this->assertBoardsEquals($board, $game->getBoard());
-        $this->assertTrue($game->hasColorWon(Color::getWhite()));
+        self::assertBoardsEquals(KIDS_CHECKMATE_BOARD, $game->getBoard());
+        self::assertTrue($game->checkIfColorWon(Color::getWhite()));
     }
 
-    public function testEnPassant(): void
+    public static function testEnPassant(): void
     {
         $game = self::createClassicGame();
 
@@ -261,21 +188,10 @@ class ChessEngineTest extends TestCase
                 self::getMove(3, 4, 2, 3)
             ));
 
-        $board = [
-            ["BR", "BN", "BB", "BQ", "BK", "BB", "__", "BR"],
-            ["BP", "BP", "BP", "__", "BP", "BP", "BP", "BP"],
-            ["__", "__", "__", "WP", "__", "BN", "__", "__"],
-            ["__", "__", "__", "__", "__", "__", "__", "__"],
-            ["__", "__", "__", "__", "__", "__", "__", "__"],
-            ["__", "__", "__", "__", "__", "__", "__", "__"],
-            ["WP", "WP", "WP", "WP", "__", "WP", "WP", "WP"],
-            ["WR", "WN", "WB", "WQ", "WK", "WB", "WN", "WR"]
-        ];
-
-        $this->assertBoardsEquals($board, $game->getBoard());
+        self::assertBoardsEquals(EN_PASSANT_BOARD, $game->getBoard());
     }
 
-    public function testShortCastling(): void
+    public static function testShortCastling(): void
     {
         $game = self::createClassicGame();
 
@@ -290,22 +206,10 @@ class ChessEngineTest extends TestCase
                 self::getMove(7, 4, 7, 6)
             ));
 
-
-        $board = [
-            ["BR", "__", "BB", "BQ", "BK", "BB", "__", "BR"],
-            ["BP", "BP", "BP", "BP", "__", "BP", "BP", "BP"],
-            ["__", "__", "BN", "__", "__", "BN", "__", "__"],
-            ["__", "__", "__", "__", "BP", "__", "__", "__"],
-            ["__", "__", "WB", "__", "WP", "__", "__", "__"],
-            ["__", "__", "__", "__", "__", "WN", "__", "__"],
-            ["WP", "WP", "WP", "WP", "__", "WP", "WP", "WP"],
-            ["WR", "WN", "WB", "WQ", "__", "WR", "WK", "__"]
-        ];
-
-        $this->assertBoardsEquals($board, $game->getBoard());
+        self::assertBoardsEquals(SHORT_CASTLING_BOARD, $game->getBoard());
     }
 
-    public function testLongCastling()
+    public static function testLongCastling()
     {
         $game = self::createClassicGame();
 
@@ -323,21 +227,10 @@ class ChessEngineTest extends TestCase
                 self::getMove(0, 4, 0, 2)
             ));
 
-        $board = [
-            ["__", "__", "BK", "BR", "__", "BB", "BN", "BR"],
-            ["BP", "BP", "BP", "__", "BP", "BP", "BP", "BP"],
-            ["__", "__", "BN", "__", "__", "__", "__", "__"],
-            ["__", "__", "__", "WP", "__", "__", "__", "__"],
-            ["__", "__", "__", "__", "__", "__", "BB", "__"],
-            ["__", "__", "__", "__", "__", "WN", "__", "__"],
-            ["WP", "WP", "WP", "WP", "__", "WP", "WP", "WP"],
-            ["WR", "__", "WB", "WQ", "WK", "WB", "__", "WR"]
-        ];
-
-        $this->assertBoardsEquals($board, $game->getBoard());
+        self::assertBoardsEquals(LONG_CASTLING_BOARD, $game->getBoard());
     }
 
-    public function testPawnTransformation()
+    public static function testPawnTransformation()
     {
         $game = self::createClassicGame();
 
@@ -361,18 +254,7 @@ class ChessEngineTest extends TestCase
                 self::getMove(0, 5, 0, 3)
             ));
 
-        $board = [
-            ["BR", "BN", "BB", "WR", "__", "__", "__", "BR"],
-            ["BP", "BP", "BP", "BP", "BK", "__", "BP", "BP"],
-            ["__", "__", "__", "__", "BP", "BN", "__", "__"],
-            ["__", "__", "BB", "__", "__", "__", "__", "__"],
-            ["__", "__", "__", "__", "BP", "__", "__", "__"],
-            ["__", "__", "__", "__", "__", "__", "__", "__"],
-            ["WP", "WP", "WP", "WP", "__", "__", "WP", "WP"],
-            ["WR", "WN", "WB", "WQ", "WK", "WB", "WN", "WR"]
-        ];
-
-        $this->assertBoardsEquals($board, $game->getBoard());
+        self::assertBoardsEquals(PAWN_TRANSFORMATION_BOARD, $game->getBoard());
     }
 
     public function testMoveFromEmptySquare(): void

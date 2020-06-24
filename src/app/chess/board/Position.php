@@ -2,9 +2,9 @@
 
 namespace app\chess\board;
 
-use utils\IntPair;
+use utils\Pair;
 
-class Position extends IntPair {
+class Position extends Pair {
     /**
      * @return int
      */

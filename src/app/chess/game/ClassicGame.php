@@ -6,6 +6,7 @@ use app\chess\board\Board;
 use app\chess\board\ClassicBoard;
 use app\chess\board\Position;
 use app\chess\Color;
+use app\chess\exceptions\GameInitializationException;
 use app\chess\exceptions\InvalidMoveException;
 use app\chess\moves\Move;
 use app\chess\pieces\AbstractPiece;
@@ -25,11 +26,10 @@ class ClassicGame extends AbstractGame
         parent::__construct(array($player1, $player2), new ClassicBoard(), Color::getWhite());
     }
 
-    public function hasColorWon(Color $color): bool
+    public function checkIfColorWon(Color $color): bool
     {
         $rivalColor = self::getOppositeColor($color);
-        $rivalKingPosition = $this->board->findPiece(King::class, $rivalColor);
-        if (!$this->board->isPositionUnderAttack($rivalKingPosition, $rivalColor)) {
+        if (!self::isKingUnderAttack($this->board, $rivalColor)) {
             return false;
         }
         $board = $this->board;
@@ -38,7 +38,7 @@ class ClassicGame extends AbstractGame
                 $position = new Position($row, $col);
                 if ($board->isPositionOccupied($position)) {
                     $piece = $board->getPiece($position);
-                    if ($piece->getColor() === $rivalColor) {
+                    if ($piece->getColor() == $rivalColor) {
                         $possibleMoves = $piece->possibleMoves($board, $position);
                         foreach ($possibleMoves as $possibleMove) {
                             $boardClone = clone $board;
@@ -133,7 +133,7 @@ class ClassicGame extends AbstractGame
         return false;
     }
 
-    public function move(Move $move, string $pieceForTransformationClass = null): void
+    public function move(Move $move, string $pieceForPawnTransformationClass = null): void
     {
         $board = $this->board;
         $boardSnapshot = clone $board;
@@ -175,11 +175,11 @@ class ClassicGame extends AbstractGame
             $board->move($piece, $move);
 
             if ($piece instanceof Pawn && ($to->getRow() == 0 || $to->getRow() == $board->getRows())
-                && isset($pieceForTransformationClass)) {
-                $pieceForTransformation = new $pieceForTransformationClass($color);
-                if ($pieceForTransformation instanceof Piece
-                    && !($pieceForTransformationClass instanceof King)) {
-                    $board->addPiece($pieceForTransformation, $to);
+                && isset($pieceForPawnTransformationClass)) {
+                $pieceForPawnTransformation = new $pieceForPawnTransformationClass($color);
+                if ($pieceForPawnTransformation instanceof Piece
+                    && !($pieceForPawnTransformationClass instanceof King)) {
+                    $board->addPiece($pieceForPawnTransformation, $to);
                 }
             }
         } else {
@@ -199,12 +199,15 @@ class ClassicGame extends AbstractGame
 
     public static function getOppositeColor(Color $color): Color
     {
-        return $color === Color::getWhite() ? Color::getBlack() : Color::getWhite();
+        return $color == Color::getWhite() ? Color::getBlack() : Color::getWhite();
     }
 
     private static function isKingUnderAttack(Board $board, Color $color): bool
     {
         $kingPosition = $board->findPiece(King::class, $color);
+        if (!isset($kingPosition)) {
+            throw new GameInitializationException("The {$color->getName()} king is expected on the board");
+        }
         return $board->isPositionUnderAttack($kingPosition, $color);
     }
 }

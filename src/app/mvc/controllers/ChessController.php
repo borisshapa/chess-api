@@ -3,18 +3,22 @@
 namespace app\mvc\controllers;
 
 use api\Controller;
+use api\exceptions\DatabaseAccessException;
+use api\routing\Router;
 use app\chess\board\Position;
 use app\chess\Color;
+use app\chess\exceptions\ChessException;
 use app\chess\game\ClassicGame;
 use app\chess\game\initialization\ClassicGameInitialization;
 use app\chess\moves\Move;
 use app\chess\players\ClassicPlayer;
 use app\mvc\models\ChessModel;
 use PDO;
+use const app\PATH_TO_PIECES;
 
 require_once "vendor/autoload.php";
 
-class ChessController extends Controller
+class ChessController implements Controller
 {
     public function start(string $player1 = "player1", string $player2 = "player2")
     {
@@ -22,27 +26,34 @@ class ChessController extends Controller
         $blackPlayer = new ClassicPlayer($player2, Color::getBlack());
 
         $game = new ClassicGame($whitePlayer, $blackPlayer);
-        $initialization = new ClassicGameInitialization();
-
+        $initialization = ClassicGameInitialization::getInstance();
         $game->initialize($initialization);
+
         $chessModel = new ChessModel();
         $id = $chessModel->create(["snapshot" => serialize($game)]);
 
-        $response = array("status" => 200, "id" => $id);
-        return json_encode($response);
+        return Router::successfulResponse(201, ["id" => $id]);
     }
 
-    public function status(int $id)
+    public function status(int $id = null)
     {
+        if (!isset($id)) {
+            return Router::badResponse(400, "'id' parameter is expected");
+        }
+
         $chessModel = new ChessModel();
-        $data = $chessModel->getById($id);
+        try {
+            $data = $chessModel->getById($id);
+        } catch (DatabaseAccessException $e) {
+            return Router::badResponse(404, $e->getMessage());
+        }
         $game = unserialize($data->snapshot);
 
         $players = $game->getPlayers();
         $player1 = $players[0];
         $player2 = $players[1];
 
-        $current = $players[$game->getCurrentPlayer()]->getColor()->getName();
+        $current = $game->getCurrentPlayer()->getColor()->getName();
         $board = $game->getBoard();
 
         $jsonBoard = array();
@@ -50,7 +61,7 @@ class ChessController extends Controller
             $jsonRow = array();
             for ($col = 0; $col < $board->getCols(); $col++) {
                 $piece = $board->getPiece(new Position($row, $col));
-                $str = isset($piece) ? strval($piece) : "0";
+                $str = isset($piece) ? strval($piece) : "__";
                 array_push($jsonRow, $str);
             }
             array_push($jsonBoard, $jsonRow);
@@ -67,27 +78,70 @@ class ChessController extends Controller
         return json_encode($data);
     }
 
-    public function move(int $id, string $from, string $to)
+    public function move(int $id = null, string $from = null, string $to = null, string $piece = null)
     {
-        $chessModel = new ChessModel();
-        $data = $chessModel->getById($id);
-        $game = unserialize($data->snapshot);
+        if (!isset($id) || !isset($from) || !isset($to)) {
+            return Router::badResponse(400, "'id', 'from', 'to' parameters are expected");
+        }
 
-        $players = $game->getPlayers();
-        $color = $players[$game->getCurrentPlayer()]->getColor();
+        $chessModel = new ChessModel();
+        try {
+            $data = $chessModel->getById($id);
+        } catch (DatabaseAccessException $e) {
+            return Router::badResponse(404, $e->getMessage());
+        }
+        $game = unserialize($data->snapshot);
+        $color = $game->getCurrentPlayer()->getColor();
 
         $rows = $game->getBoard()->getRows();
-        $game->move(new Move($this->parsePosition($from, $rows), $this->parsePosition($to, $rows)));
+        if (isset($piece)) {
+            $piece = ucfirst(strtolower($piece));
+            $piece = PATH_TO_PIECES . $piece;
+        }
 
-        if ($game->winningConditions($color)) {
-            var_dump("I AM GENIOUS");
+        try {
+            $game->move(new Move($this->parsePosition($from, $rows), $this->parsePosition($to, $rows)), $piece);
+        } catch (ChessException $e) {
+            return Router::badResponse(400, $e->getMessage());
+        }
+
+        if ($game->checkIfColorWon($color)) {
             $chessModel->delete($id);
+            return Router::successfulResponse(200,
+                [
+                    "id" => $id,
+                    "message" => "{$color->getName()} player won. The {$id} game has been removed from the database."
+                ]
+            );
         } else {
             $chessModel->updateById($id, ["snapshot" => serialize($game)]);
+            return Router::successfulResponse(200,
+                [
+                    "id" => $id,
+                    "message" => "A move {$from}-{$to} has been made."
+                ]
+            );
         }
     }
 
-    public function parsePosition(string $position, int $rows) {
+    public function finish(int $id = null)
+    {
+        if (!isset($id)) {
+            return Router::badResponse(400, "'id' parameter is expected");
+        }
+
+        $chessModel = new ChessModel();
+        $chessModel->delete($id);
+        return Router::successfulResponse(200,
+            [
+                "id" => $id,
+                "message" => "Game over. The {$id} game has been removed from the database."
+            ]
+        );
+    }
+
+    public function parsePosition(string $position, int $rows)
+    {
         $position = strtolower($position);
         $row = $rows - $position[1];
         $col = ord($position[0]) - ord('a');
