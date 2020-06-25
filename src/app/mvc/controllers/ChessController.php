@@ -154,7 +154,7 @@ class ChessController implements Controller
      * @param int|null $id id of the game in the database in which you want to make a move.
      * @param string|null $from the position of the piece that is walking. In chess notation ({@example "e2"}).
      * @param string|null $to the position in which the piece is after the move. In chess notation ({@example "e4"}).
-     * @param string|null $piece if a pawn moves to a far row from its initial position,
+     * @param string|null $promotion if a pawn moves to a far row from its initial position,
      * then it turns into this piece. If another move was made, then this parameter is ignored,
      * also if the parameter was not passed with such a move, the pawn remains itself.
      * The name of the piece is case insensitive. ({@example "rook", "RoOk"})
@@ -163,7 +163,7 @@ class ChessController implements Controller
      * @see Router::badResponse()
      * @see Game::move()
      */
-    public function move(int $id = null, string $from = null, string $to = null, string $piece = null)
+    public function move(int $id = null, string $from = null, string $to = null, string $promotion = null)
     {
         if (!isset($id) || !isset($from) || !isset($to)) {
             return Router::badResponse(400, "'id', 'from', 'to' parameters are expected");
@@ -179,13 +179,13 @@ class ChessController implements Controller
         $color = $game->getCurrentPlayer()->getColor();
 
         $rows = $game->getBoard()->getRows();
-        if (isset($piece)) {
-            $piece = ucfirst(strtolower($piece));
-            $piece = PATH_TO_PIECES . $piece;
+        if (isset($promotion)) {
+            $promotion = ucfirst(strtolower($promotion));
+            $promotion = PATH_TO_PIECES . $promotion;
         }
 
         try {
-            $game->move(new Move($this->parsePosition($from, $rows), $this->parsePosition($to, $rows)), $piece);
+            $game->move(new Move($this->parsePosition($from, $rows), $this->parsePosition($to, $rows)), $promotion);
         } catch (ChessException $e) {
             return Router::badResponse(400, $e->getMessage());
         }

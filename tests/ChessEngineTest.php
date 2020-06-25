@@ -230,7 +230,7 @@ class ChessEngineTest extends TestCase
         self::assertBoardsEquals(LONG_CASTLING_BOARD, $game->getBoard());
     }
 
-    public static function testPawnTransformation()
+    public static function testPawnPromotion()
     {
         $game = self::createClassicGame();
 
@@ -254,7 +254,7 @@ class ChessEngineTest extends TestCase
                 self::getMove(0, 5, 0, 3)
             ));
 
-        self::assertBoardsEquals(PAWN_TRANSFORMATION_BOARD, $game->getBoard());
+        self::assertBoardsEquals(PAWN_PROMOTION_BOARD, $game->getBoard());
     }
 
     public function testMoveFromEmptySquare(): void

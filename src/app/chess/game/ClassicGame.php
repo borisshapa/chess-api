@@ -175,7 +175,7 @@ class ClassicGame extends AbstractGame
      * @inheritDoc
      * A player makes a move defined by a field {@see AbstractGame::$currentPlayer}.
      * After that, the move passes to another player.
-     * @param string|null $pieceForPawnTransformationClass (name of piece class)
+     * @param string|null $pawnPromotion (name of piece class)
      * if a pawn moves to a far row from its initial position,
      * then it turns into this piece. If another move was made, then this parameter is ignored,
      * also if the parameter was not passed with such a move, the pawn remains itself.
@@ -185,7 +185,7 @@ class ClassicGame extends AbstractGame
      * a {@see Piece} that is in the position which the move is made from can not moves like that or
      * after the player’s move, his king was under attack.
      */
-    public function move(Move $move, string $pieceForPawnTransformationClass = null): void
+    public function move(Move $move, string $pawnPromotion = null): void
     {
         $board = $this->board;
         $boardSnapshot = clone $board;
@@ -227,11 +227,11 @@ class ClassicGame extends AbstractGame
             $board->move($piece, $move);
 
             if ($piece instanceof Pawn && ($to->getRow() == 0 || $to->getRow() == $board->getRows())
-                && isset($pieceForPawnTransformationClass)) {
-                $pieceForPawnTransformation = new $pieceForPawnTransformationClass($color);
-                if ($pieceForPawnTransformation instanceof Piece
-                    && !($pieceForPawnTransformationClass instanceof King)) {
-                    $board->addPiece($pieceForPawnTransformation, $to);
+                && isset($pawnPromotion)) {
+                $pieceForPawnPromotion = new $pawnPromotion($color);
+                if ($pieceForPawnPromotion instanceof Piece
+                    && !($pawnPromotion instanceof King)) {
+                    $board->addPiece($pieceForPawnPromotion, $to);
                 }
             }
         } else {

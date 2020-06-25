@@ -123,7 +123,7 @@ const LONG_CASTLING_BOARD = [
     ["WR", "__", "WB", "WQ", "WK", "WB", "__", "WR"]
 ];
 
-const PAWN_TRANSFORMATION_BOARD = [
+const PAWN_PROMOTION_BOARD = [
     ["BR", "BN", "BB", "WR", "__", "__", "__", "BR"],
     ["BP", "BP", "BP", "BP", "BK", "__", "BP", "BP"],
     ["__", "__", "__", "__", "BP", "BN", "__", "__"],

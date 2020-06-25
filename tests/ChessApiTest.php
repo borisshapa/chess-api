@@ -54,15 +54,15 @@ class ChessApiTest extends TestCase
         return $data->id;
     }
 
-    private static function makeMove(int $id, string $from, string $to, string $pieceForPawnTransformation = null)
+    private static function makeMove(int $id, string $from, string $to, string $pawnPromotion = null)
     {
         $query = [
             "id" => $id,
             "from" => $from,
             "to" => $to
         ];
-        if (isset($pieceForPawnTransformation)) {
-            $query["piece"] = $pieceForPawnTransformation;
+        if (isset($pawnPromotion)) {
+            $query["promotion"] = $pawnPromotion;
         }
         $response = self::$client->request("PUT", "move", ["query" =>
             $query, "http_errors" => false]);
@@ -227,7 +227,7 @@ class ChessApiTest extends TestCase
         self::assertEquals("ChessException : InvalidMoveException : Unable to castle.", $data->message);
     }
 
-    public static function testPawnTransformation()
+    public static function testPawnPromotion()
     {
         $gameId = self::createGame();
         self::chainOfMoves($gameId,
@@ -250,7 +250,7 @@ class ChessApiTest extends TestCase
                 new Pair("f8", "d8")
             ));
         self::assertTrue(self::responseIsOk($data));
-        self::assertEquals(PAWN_TRANSFORMATION_BOARD, self::getGameStatus($gameId)->board);
+        self::assertEquals(PAWN_PROMOTION_BOARD, self::getGameStatus($gameId)->board);
     }
 
     public function testInvalidRoute()
