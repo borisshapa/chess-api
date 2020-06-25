@@ -5,13 +5,24 @@ namespace app\chess\pieces;
 
 use app\chess\board\Board;
 use app\chess\board\Position;
-use app\chess\Color;
 use utils\Pair;
 
+/**
+ * Class Pawn
+ * @package app\chess\pieces
+ * @see Piece
+ * @see AbstractPiece
+ * @author Boris Shaposhnikov bshaposhnikov01@gmail.com
+ */
 class Pawn extends AbstractPiece
 {
     private static ?array $SINGLE_MOVES = null;
 
+    /**
+     * Initialization of a static array that contains
+     * the minimum possible displacements of the piece
+     * in the form of a two-dimensional vector.
+     */
     public static function init(): void
     {
         if (self::$SINGLE_MOVES == null) {
@@ -71,8 +82,10 @@ class Pawn extends AbstractPiece
         return $possibleMoves;
     }
 
-    public
-    function __toString(): string
+    /**
+     * @return string string representation of the pawn ({@example "WP" — white pawn}).
+     */
+    public function __toString(): string
     {
         return $this->toStr("P");
     }

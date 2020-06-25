@@ -4,11 +4,23 @@ namespace app\chess\moves;
 
 use app\chess\board\Position;
 
+/**
+ * Class Move
+ * Description of move.
+ * @package app\chess\moves
+ * @see Position
+ * @author Boris Shaposhnikov bshaposhnikov01@gmail.com
+ */
 class Move
 {
     private Position $from;
     private Position $to;
 
+    /**
+     * Move constructor.
+     * @param Position $from what position the move is made from
+     * @param Position $to what position the move is made to
+     */
     public function __construct(Position $from, Position $to)
     {
         $this->from = $from;
@@ -16,7 +28,7 @@ class Move
     }
 
     /**
-     * @return Position
+     * @return Position what position the move is made from
      */
     public function getFrom(): Position
     {
@@ -24,7 +36,7 @@ class Move
     }
 
     /**
-     * @return Position
+     * @return Position what position the move is made to
      */
     public function getTo(): Position
     {

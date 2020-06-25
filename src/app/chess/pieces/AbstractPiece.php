@@ -10,21 +10,43 @@ use app\chess\board\{
 
 use app\chess\Color;
 
+/**
+ * Class AbstractPiece
+ * Template for creating chess pieces.
+ * @package app\chess\pieces
+ * @see Piece
+ * @author Boris Shaposhnikov bshaposhnikov01@gmail.com
+ */
 abstract class AbstractPiece implements Piece
 {
+    /**
+     * @var Color piece color
+     */
     protected Color $color;
 
+    /**
+     * AbstractPiece constructor.
+     * @param Color $color piece color
+     */
     public function __construct(Color $color)
     {
         $this->color = $color;
     }
 
+    /**
+     * @return Color piece color
+     */
     public function getColor(): Color
     {
         return $this->color;
     }
 
-    protected function toStr($letter): string
+    /**
+     * @param string $letter the letter that designates the piece.
+     * @return string the string value of the piece,
+     * where the first letter is a color and the second is a type ({@example "WB" — white bishop}).
+     */
+    protected function toStr(string $letter): string
     {
         return $this->getColor()->getName()[0] . $letter;
     }
@@ -35,11 +57,26 @@ abstract class AbstractPiece implements Piece
             $this->normalMoves($board, $position));
     }
 
-    protected static function checkColor(Piece $piece, Color $color)
+    /**
+     * Checks if the color of the piece matches the passed color.
+     * @param Piece $piece checked piece
+     * @param Color $color expected color
+     * @return bool if and only if the color of the piece matches the expected color
+     */
+    protected static function checkColor(Piece $piece, Color $color): bool
     {
         return $piece->getColor() == $color;
     }
 
+    /**
+     * Returns the possible positions that the piece can move to without eating anyone.
+     * <b>For pieces whose move consists of repeating several small moves
+     * ({@example A rook move may consist of several moves that move it one square}).</b>
+     * @param Board $board where to check positions
+     * @param Position $position where is this piece ({@see Rook}, {@see Bishop} or {@see Queen}) located
+     * @param array $singleMoves moves that move a piece one cell.
+     * @return array array of the positions to which the piece can move, while not eating anyone
+     */
     protected function longNormalMoves(Board $board, Position $position, array $singleMoves): array
     {
         $possibleMoves = array();
@@ -58,6 +95,15 @@ abstract class AbstractPiece implements Piece
         return $possibleMoves;
     }
 
+    /**
+     * Returns the positions on which the opponent’s pieces stand that can be eaten.
+     * <b>For pieces whose move consists of repeating several small moves
+     * ({@example A rook move may consist of several moves that move it one square}).</b>
+     * @param Board $board where to check positions
+     * @param Position $position where is this piece ({@see Rook}, {@see Bishop} or {@see Queen}) located
+     * @param array $singleMoves moves that move a piece one cell.
+     * @return array array of the positions on which the opponent’s pieces stand that can be eaten.
+     */
     protected function longAttackMoves(Board $board, Position $position, array $singleMoves): array
     {
         $color = $this->getColor();
@@ -83,6 +129,14 @@ abstract class AbstractPiece implements Piece
         return $possibleMoves;
     }
 
+    /**
+     * Returns the positions on which the opponent’s pieces stand that can be eaten.
+     * <b>For pieces whose move consists of one movement({@example {@see Knight} or {@see King}}).</b>
+     * @param Board $board where to check positions
+     * @param Position $position where is this piece ({@see Knight} or {@see King}) located
+     * @param array $singleMoves moves that move a piece one cell.
+     * @return array array of the positions on which the opponent’s pieces stand that can be eaten.
+     */
     protected function singleAttackMoves(Board $board, Position $position, array $singleMoves): array
     {
         $color = $this->getColor();
@@ -101,6 +155,14 @@ abstract class AbstractPiece implements Piece
         return $possibleMoves;
     }
 
+    /**
+     * Returns the possible positions that the piece can move to without eating anyone.
+     * <b>For pieces whose move consists of one movement({@example {@see Knight} or {@see King}}).</b>
+     * @param Board $board where to check positions
+     * @param Position $position where is this piece ({@see Knight} or {@see King}) located
+     * @param array $singleMoves moves that move a piece one cell.
+     * @return array array of the positions to which the piece can move, while not eating anyone
+     */
     protected function singleNormalMoves(Board $board, Position $position, array $singleMoves): array
     {
         $possibleMoves = array();
@@ -115,6 +177,12 @@ abstract class AbstractPiece implements Piece
         return $possibleMoves;
     }
 
+    /**
+     * Checks if the position is correct and free for the given board.
+     * @param Board $board where to check
+     * @param Position $position what position to check
+     * @return bool <var>true</var> if and only if the position is correct and free for the given board
+     */
     protected function isPositionValidAndFree(Board $board, Position $position): bool
     {
         try {
@@ -124,6 +192,12 @@ abstract class AbstractPiece implements Piece
         }
     }
 
+    /**
+     * Checks if the position is correct and occupied for the given board.
+     * @param Board $board where to check
+     * @param Position $position what position to check
+     * @return bool <var>true</var> if and only if the position is correct and occupied for the given board
+     */
     protected static function isPositionValidAndOccupied(Board $board, Position $position): bool
     {
         try {

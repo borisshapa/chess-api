@@ -6,10 +6,13 @@ namespace api;
 
 use api\exceptions\DatabaseAccessException;
 use app\MySqlConnection;
+use PDO;
 
 /**
  * Class MySqlModel
  * Work with MySql database table.
+ * @see Model
+ * @see MySqlConnection
  * @package api
  */
 class MySqlModel extends Model
@@ -20,9 +23,9 @@ class MySqlModel extends Model
     protected string $table;
 
     /**
-     * @var MySqlConnection|mixed|\PDO connection to the MySql database.
+     * @var PDO connection to the MySql database.
      */
-    protected MySqlConnection $connection;
+    protected PDO $connection;
 
     /**
      * MySqlModel constructor.
@@ -67,6 +70,10 @@ class MySqlModel extends Model
         return $query->fetchAll(\PDO::FETCH_CLASS);
     }
 
+    /**
+     * @inheritDoc
+     * @throws {@see DatabaseAccessException} if there is no row in the DB with the given id.
+     */
     public function getById(int $id)
     {
         $query = $this->connection->prepare("SELECT * FROM `{$this->table}` WHERE {$this->getIdField()} = $id");

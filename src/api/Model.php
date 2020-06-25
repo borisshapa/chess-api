@@ -7,6 +7,7 @@ namespace api;
  * Class Model
  * A class for working with a table in a database.
  * @package api
+ * @author Boris Shaposhnikov bshaposhnikov01@gmail.com
  */
 abstract class Model
 {

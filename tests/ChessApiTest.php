@@ -3,17 +3,20 @@
 
 namespace tests;
 
-use app\chess\pieces\Rook;
 use GuzzleHttp\Client;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use utils\Pair;
 use const app\HOST;
-use const app\PATH_TO_PIECES;
 use const app\PORT;
 
+/**
+ * Class ChessApiTest
+ * Testing api for chess games.
+ * @package tests
+ * @see TestCase
+ * @author Boris Shaposhnikov bshaposhnikov01@gmail.com
+ */
 class ChessApiTest extends TestCase
 {
     private static Client $client;

@@ -6,26 +6,45 @@ use app\chess\board\Board;
 use app\chess\board\ClassicBoard;
 use app\chess\board\Position;
 use app\chess\Color;
+use app\chess\exceptions\GameException;
 use app\chess\exceptions\GameInitializationException;
 use app\chess\exceptions\InvalidMoveException;
 use app\chess\moves\Move;
-use app\chess\pieces\AbstractPiece;
 use app\chess\pieces\King;
 use app\chess\pieces\Pawn;
 use app\chess\pieces\Piece;
 use app\chess\pieces\Rook;
 use app\chess\players\Player;
 
+/**
+ * Class ClassicGame
+ * A game of chess with classic rules.
+ * @package app\chess\game
+ * @see Game
+ * @see AbstractGame
+ * @author Boris Shaposhnikov bshaposhnikov01@gmail.com
+ */
 class ClassicGame extends AbstractGame
 {
     private ?Position $canBeEatenByEnPassant;
     private const CASTLING_ERROR_MESSAGE = "Unable to castle.";
 
+    /**
+     * ClassicGame constructor.
+     * Creates a classic game.
+     * @param Player $player1 first player
+     * @param Player $player2 second player
+     * @throws GameException If there is no player playing with white pieces among two players.
+     */
     public function __construct(Player $player1, Player $player2)
     {
         parent::__construct(array($player1, $player2), new ClassicBoard(), Color::getWhite());
     }
 
+    /**
+     * @inheritDoc
+     * @throws GameInitializationException if there is no opponent {@see King} on the {@see Board}
+     */
     public function checkIfColorWon(Color $color): bool
     {
         $rivalColor = self::getOppositeColor($color);
@@ -33,7 +52,7 @@ class ClassicGame extends AbstractGame
             return false;
         }
         $board = $this->board;
-        for($row = 0; $row < $board->getRows(); $row++) {
+        for ($row = 0; $row < $board->getRows(); $row++) {
             for ($col = 0; $col < $board->getCols(); $col++) {
                 $position = new Position($row, $col);
                 if ($board->isPositionOccupied($position)) {
@@ -55,14 +74,31 @@ class ClassicGame extends AbstractGame
         return true;
     }
 
-    private function checkIfPositionUnderAttack(Board $board, Piece $piece, Position $position, string $errorMessage)
+    /**
+     * Throws an exception if the position is under attack by an opponent.
+     * @param Board $board the board on which the check is done.
+     * @param Color $color if there was a {@see Piece} of this color in the position,
+     * if would be under attack.
+     * @param Position $position checked position
+     * @param string $errorMessage error message if thrown.
+     * @throws InvalidMoveException if the position is under attack by an opponent.
+     */
+    private static function checkIfPositionUnderAttack(Board $board, Color $color,
+                                                       Position $position, string $errorMessage): void
     {
-        if ($board->isPositionUnderAttack($position, $piece->getColor())) {
+        if ($board->isPositionUnderAttack($position, $color)) {
             throw new InvalidMoveException($errorMessage);
         }
     }
 
-    public function isMoveCastling(Move $move): bool
+    /**
+     * Checks if the move is castling.
+     * @param Move $move checked move
+     * @return bool <var>true</var> if and only if the passed move is castling, <var>false</var> otherwise.
+     * @throws InvalidMoveException if the {@see King} takes more than one step,
+     * but the conditions for castling are not fulfilled.
+     */
+    private function isMoveCastling(Move $move): bool
     {
         $board = $this->board;
 
@@ -71,9 +107,6 @@ class ClassicGame extends AbstractGame
 
         $piece = $board->getPiece($from);
 
-//        if ($piece instanceof King && $board->pieceNeverMovedFromPosition($from)) {
-//            var_dump($from);
-//        }
         if ($piece instanceof King && $board->pieceNeverMovedFromPosition($from)) {
             $rowDiff = $to->getRow() - $from->getRow();
             $colDiff = $to->getCol() - $from->getCol();
@@ -97,17 +130,22 @@ class ClassicGame extends AbstractGame
                 $row = $from->getRow();
                 $col = $from->getCol();
                 while ($col != $to->getCol()) {
-                    $this->checkIfPositionUnderAttack($board, $piece, new Position($row, $col), self::CASTLING_ERROR_MESSAGE);
+                    $this->checkIfPositionUnderAttack($board, $piece->getColor(), new Position($row, $col), self::CASTLING_ERROR_MESSAGE);
                     $col += $singleColMove;
                 }
-                $this->checkIfPositionUnderAttack($board, $piece, new Position($row, $col), self::CASTLING_ERROR_MESSAGE);
+                $this->checkIfPositionUnderAttack($board, $piece->getColor(), new Position($row, $col), self::CASTLING_ERROR_MESSAGE);
                 return true;
             }
         }
         return false;
     }
 
-    public function isMoveEnPassant(Move $move)
+    /**
+     * Checks if the move is en passant.
+     * @param Move $move checked move
+     * @return bool <var>true</var> if and only if the move is en passant, <var>false</var> otherwise.
+     */
+    private function isMoveEnPassant(Move $move): bool
     {
         $board = $this->board;
 
@@ -133,6 +171,20 @@ class ClassicGame extends AbstractGame
         return false;
     }
 
+    /**
+     * @inheritDoc
+     * A player makes a move defined by a field {@see AbstractGame::$currentPlayer}.
+     * After that, the move passes to another player.
+     * @param string|null $pieceForPawnTransformationClass (name of piece class)
+     * if a pawn moves to a far row from its initial position,
+     * then it turns into this piece. If another move was made, then this parameter is ignored,
+     * also if the parameter was not passed with such a move, the pawn remains itself.
+     * @throws GameInitializationException there is no {@see King} on the {@see Board} that belongs
+     * to the {@see Player} making the move.
+     * @throws InvalidMoveException if there is no {@see Piece} in the position with which the move is made,
+     * a {@see Piece} that is in the position which the move is made from can not moves like that or
+     * after the player’s move, his king was under attack.
+     */
     public function move(Move $move, string $pieceForPawnTransformationClass = null): void
     {
         $board = $this->board;
@@ -192,16 +244,28 @@ class ClassicGame extends AbstractGame
 
         if (self::isKingUnderAttack($board, $color)) {
             $this->board = $boardSnapshot;
-            throw new InvalidMoveException();
+            throw new InvalidMoveException("After the player’s move, his king was under attack.");
         }
         $this->nextPlayer();
     }
 
+    /**
+     * @param Color $color the color for which the opposite is sought.
+     * @return Color the color of the opponent of the player with the passed color.
+     */
     public static function getOppositeColor(Color $color): Color
     {
         return $color == Color::getWhite() ? Color::getBlack() : Color::getWhite();
     }
 
+    /**
+     * Checks
+     * @param Board $board the board on which the check is done.
+     * @param Color $color which king is being checked
+     * @return bool <var>true</var> if and only if the {@see King} of the specified
+     * color is under attack from an opponent’s piece, <var>false</var> otherwise.
+     * @throws GameInitializationException if there is no {@see King} of the specified color on the board.
+     */
     private static function isKingUnderAttack(Board $board, Color $color): bool
     {
         $kingPosition = $board->findPiece(King::class, $color);

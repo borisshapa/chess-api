@@ -4,6 +4,8 @@
 namespace api\routing;
 
 
+use ReflectionException;
+use ReflectionMethod;
 use const app\PATH_TO_CONTROLLERS;
 
 /**
@@ -11,8 +13,10 @@ use const app\PATH_TO_CONTROLLERS;
  * Upon request, it finds a suitable route and performs the corresponding action.
  * Returns the result or error message in JSON format.
  * @package api\routing
+ * @api
  * @see Route
  * @see Request
+ * @author Boris Shaposhnikov bshaposhnikov01@gmail.com
  */
 class Router
 {
@@ -83,8 +87,8 @@ class Router
 
                 if (method_exists($controller, $methodName)) {
                     try {
-                        $rm = new \ReflectionMethod($controllerName, $methodName);
-                    } catch (\ReflectionException $e) {
+                        $rm = new ReflectionMethod($controllerName, $methodName);
+                    } catch (ReflectionException $e) {
                         return self::badResponse(400, "Unsupported controller or method");
                     }
                     $params = $this->request->getParams();
@@ -101,7 +105,7 @@ class Router
     /**
      * Adds a route to the list of supported ones.
      * Upon receipt of a suitable request, the <var>Router</var> will call the necessary method,
-     * passed to this {@link Route} constructor.
+     * passed to this {@see Route} constructor.
      * @param Route $route route parameters
      * @see Route
      */

@@ -3,13 +3,23 @@
 
 namespace utils;
 
-
-// TODO rename to int pair
+/**
+ * Class Pair
+ * A structure that stores ordered pair of items.
+ * @package utils
+ * @author Boris Shaposhnikov bshaposhnikov01@gmail.com
+ */
 class Pair
 {
     private $first;
     private $second;
 
+    /**
+     * Pair constructor.
+     * Creates the pair by passed two elements.
+     * @param $first
+     * @param $second
+     */
     public function __construct($first, $second)
     {
         $this->first = $first;
@@ -17,7 +27,7 @@ class Pair
     }
 
     /**
-     * @return mixed
+     * @return mixed first element of the pair
      */
     public function getFirst()
     {
@@ -25,7 +35,7 @@ class Pair
     }
 
     /**
-     * @return mixed
+     * @return mixed second element of the pair
      */
     public function getSecond()
     {

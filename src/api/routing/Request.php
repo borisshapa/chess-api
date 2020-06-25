@@ -9,6 +9,7 @@ namespace api\routing;
  * @package api\routing
  * @see Route
  * @see Router
+ * @author Boris Shaposhnikov bshaposhnikov01@gmail.com
  */
 class Request
 {
@@ -51,7 +52,8 @@ class Request
     }
 
     /**
-     * @return array GET parameters without 'path' if the request is GET, PUT or DELTE-request, POST parameters if the request is POST
+     * @return array GET parameters without 'path' if the request is GET, PUT or DELTE-request,
+     * POST parameters if the request is POST
      */
     public function getParams(): array
     {

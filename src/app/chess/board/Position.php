@@ -4,9 +4,18 @@ namespace app\chess\board;
 
 use utils\Pair;
 
-class Position extends Pair {
+/**
+ * Class Position
+ * Pair of row numbers and column number,
+ * counting from the upper left corner of the board, starting from zero.
+ * @package app\chess\board
+ * @see Pair
+ * @author Boris Shaposhnikov bshaposhnikov01@gmail.com
+ */
+class Position extends Pair
+{
     /**
-     * @return int
+     * @return int row number, counting from the top, starting from 0.
      */
     public function getRow(): int
     {
@@ -14,7 +23,7 @@ class Position extends Pair {
     }
 
     /**
-     * @return int
+     * @return int column number, counting from the left, starting from 0.
      */
     public function getCol(): int
     {

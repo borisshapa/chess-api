@@ -9,13 +9,40 @@ use app\chess\moves\Move;
 use app\chess\pieces\Piece;
 use app\chess\pieces\King;
 
+/**
+ * Class AbstractRectangularBoard
+ * Rectangular chess board.
+ * @package app\chess\board
+ * @see Board
+ * @author Boris Shaposhnikov bshaposhnikov01@gmail.com
+ */
 abstract class AbstractRectangularBoard implements Board
 {
+    /**
+     * @var int number of rows
+     */
     protected int $rows;
+
+    /**
+     * @var int number of columns
+     */
     protected int $cols;
+
+    /**
+     * @var array chess board
+     */
     protected array $board;
+
+    /**
+     * @var array positions in which there are pieces that have never moved
+     */
     protected array $neverMovedFromPosition = array();
 
+    /**
+     * AbstractRectangularBoard constructor.
+     * @param int $rows number of rows of chess board
+     * @param int $cols number of columns of chess board
+     */
     protected function __construct(int $rows,
                                    int $cols)
     {
@@ -28,17 +55,27 @@ abstract class AbstractRectangularBoard implements Board
         }
     }
 
+    /**
+     * @return int number of rows of chess board
+     */
     public function getRows(): int
     {
         return $this->rows;
     }
 
+    /**
+     * @return int number of columns of chess board
+     */
     public function getCols(): int
     {
         return $this->cols;
     }
 
-
+    /**
+     * @inheritDoc
+     * @throws OutOfBoardException if the {@see Position} is not correct for the board.
+     * @see AbstractRectangularBoard::isPositionValid()
+     */
     public function addPiece(Piece $piece, Position $position): void
     {
         if (!$this->isPositionValid($position)) {
@@ -48,6 +85,11 @@ abstract class AbstractRectangularBoard implements Board
         array_push($this->neverMovedFromPosition, $position);
     }
 
+    /**
+     * @inheritDoc
+     * @throws OutOfBoardException if the {@see Position} is not correct for the board.
+     * @see AbstractRectangularBoard::isPositionValid()
+     */
     public function removePiece(Position $position): void
     {
         if (!$this->isPositionValid($position)) {
@@ -67,18 +109,33 @@ abstract class AbstractRectangularBoard implements Board
             && $position->getCol() >= 0 && $position->getCol() < $this->getCols();
     }
 
+    /**
+     * @inheritDoc
+     * @throws OutOfBoardException if the {@see Position} is not correct for the board.
+     * @see AbstractRectangularBoard::isPositionValid()
+     */
     public function isPositionFree(Position $position): bool
     {
         $piece = $this->getPiece($position);
         return !isset($piece);
     }
 
+    /**
+     * @inheritDoc
+     * @throws OutOfBoardException if the {@see Position} is not correct for the board.
+     * @see AbstractRectangularBoard::isPositionValid()
+     */
     public function isPositionOccupied(Position $position): bool
     {
         $piece = $this->getPiece($position);
         return isset($piece);
     }
 
+    /**
+     * @inheritDoc
+     * @throws OutOfBoardException if the {@see Position} is not correct for the board.
+     * @see AbstractRectangularBoard::isPositionValid()
+     */
     public function getPiece(Position $position): ?Piece
     {
         if (!$this->isPositionValid($position)) {
@@ -87,6 +144,12 @@ abstract class AbstractRectangularBoard implements Board
         return $this->board[$position->getRow()][$position->getCol()] ?? null;
     }
 
+    /**
+     * @inheritDoc
+     * @throws OutOfBoardException if the {@see Move::getFrom()} {@see Position} is not correct for the board.
+     * @throws InvalidMoveException if the move does not meet the rules.
+     * @see AbstractRectangularBoard::isPositionValid()
+     */
     public function move(Piece $piece, Move $move): void
     {
         $from = $move->getFrom();
@@ -104,6 +167,11 @@ abstract class AbstractRectangularBoard implements Board
         $this->board[$to->getRow()][$to->getCol()] = $piece;
     }
 
+    /**
+     * @inheritDoc
+     * @throws OutOfBoardException if the {@see Position} is not correct for the board.
+     * @see AbstractRectangularBoard::isPositionValid()
+     */
     public function isPositionUnderAttack(Position $position, Color $color): bool
     {
         $board = clone $this;
@@ -125,6 +193,11 @@ abstract class AbstractRectangularBoard implements Board
         return false;
     }
 
+    /**
+     * @inheritDoc
+     * @throws OutOfBoardException if the {@see Position} is not correct for the board.
+     * @see AbstractRectangularBoard::isPositionValid()
+     */
     public function pieceNeverMovedFromPosition(Position $position): bool
     {
         if (!$this->isPositionValid($position)) {

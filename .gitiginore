@@ -2,3 +2,5 @@
 /src/test.php
 /vendor/
 /composer.json
+/.phpunit.result.cache
+/composer.lock

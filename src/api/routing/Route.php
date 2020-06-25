@@ -10,6 +10,7 @@ use api\Controller;
  * @package api\routing
  * @see Router
  * @see Request
+ * @author Boris Shaposhnikov bshaposhnikov01@gmail.com
  */
 class Route
 {
@@ -38,7 +39,7 @@ class Route
      * Route constructor.
      * @param string $path the path along which to send the request so that it is processed by the appropriate method.
      * @param int $type type of requests that route takes (GET - 1, POST - 2, PUT - 3, DELTE - 4)
-     * @param string $action method in the format '{@link Controller}<code>@method</code>' that processes the request
+     * @param string $action method in the format '{@see Controller}<code>@method</code>' that processes the request
      */
     public function __construct(string $path, int $type, string $action)
     {
@@ -64,7 +65,7 @@ class Route
     }
 
     /**
-     * @return string method in the format '{@link Controller}<code>@method</code>' that processes the request
+     * @return string method in the format '{@see Controller}<code>@method</code>' that processes the request
      */
     public function getAction(): string
     {

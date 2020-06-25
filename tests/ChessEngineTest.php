@@ -6,25 +6,25 @@ use app\chess\board\Board;
 use app\chess\board\Position;
 use app\chess\Color;
 use app\chess\exceptions\InvalidMoveException;
-use app\chess\exceptions\OutOfBoardException;
 use app\chess\game\ClassicGame;
 use app\chess\game\Game;
 use app\chess\game\initialization\ClassicGameInitialization;
 use app\chess\game\initialization\GameInitialization;
 use app\chess\moves\Move;
-use app\chess\pieces\Bishop;
-use app\chess\pieces\King;
-use app\chess\pieces\Knight;
-use app\chess\pieces\Pawn;
-use app\chess\pieces\Queen;
 use app\chess\pieces\Rook;
 use app\chess\players\ClassicPlayer;
 use app\chess\players\Player;
-use phpDocumentor\Reflection\DocBlock\Tags\See;
-use phpDocumentor\Reflection\Types\Self_;
-use phpDocumentor\Reflection\Types\This;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class ChessEngineTest
+ * Testing the operation of the part of the code responsible
+ * for initializing the chessboard, completing moves and verifying
+ * the victory conditions.
+ * @package tests
+ * @see TestCase
+ * @author Boris Shaposhnikov bshaposhnikov01@gmail.com
+ */
 class ChessEngineTest extends TestCase
 {
     private static Player $player1;

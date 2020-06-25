@@ -16,6 +16,13 @@ use app\chess\pieces\Queen;
 use app\chess\pieces\Rook;
 use app\chess\players\Player;
 
+/**
+ * Class ClassicGameInitialization
+ * The classic arrangement of pieces on the board ({@link https://en.wikipedia.org/wiki/Chess#Setup}).
+ * @package app\chess\game\initialization
+ * @see GameInitialization
+ * @author Boris Shaposhnikov bshaposhnikov01@gmail.com
+ */
 class ClassicGameInitialization implements GameInitialization
 {
     private static ?GameInitialization $instance = null;
@@ -33,10 +40,17 @@ class ClassicGameInitialization implements GameInitialization
         Rook::class
     );
 
+    /**
+     * ClassicGameInitialization constructor.
+     * Prevent constructor calls outside the class.
+     */
     private function __construct()
     {
     }
 
+    /**
+     * Restriction on cloning of an object of a class.
+     */
     protected function __clone()
     {
     }
@@ -49,6 +63,11 @@ class ClassicGameInitialization implements GameInitialization
         return self::$instance;
     }
 
+    /**
+     * @inheritDoc
+     * @throws GameInitializationException if the size of the passed
+     * array of players is not 2 or the size of the board is not 8 x 8.
+     */
     public function initialize(array $players, Board $board): void
     {
         if (count($players) != self::PLAYERS) {
@@ -65,6 +84,13 @@ class ClassicGameInitialization implements GameInitialization
         }
     }
 
+    /**
+     * Adds rooks, bishops, knights, queen and king to the board.
+     * @param Player $player for whom to add pieces
+     * @param Board $board where to add pieces
+     * @throws GameInitializationException if not two possible rows for arrangement
+     * of pieces are passed to the function {@see ClassicGameInitialization::addPiece()}.
+     */
     private function addValuablePieces(Player $player, Board $board): void
     {
         for ($col = 0; $col < self::BOARD_SIDE; $col++) {
@@ -74,6 +100,13 @@ class ClassicGameInitialization implements GameInitialization
         }
     }
 
+    /**
+     * Adds pawns to the board.
+     * @param Player $player for whom to add pieces
+     * @param Board $board where to add pieces
+     * @throws GameInitializationException if not two possible rows for arrangement
+     * of pawns are passed to the function {@see ClassicGameInitialization::addPiece()}.
+     */
     private function addPawns(Player $player, Board $board): void
     {
         for ($col = 0; $col < self::BOARD_SIDE; $col++) {
@@ -82,6 +115,17 @@ class ClassicGameInitialization implements GameInitialization
         }
     }
 
+    /**
+     * Adds a piece to the board.
+     * @param Player $player for whom to add piece
+     * @param Board $board where to add pieces
+     * @param Piece $piece what {@see Piece} to add
+     * @param int $col piece column
+     * @param array $rows A set of possible rows of a piece depending on its color.
+     * - <var>$rows[0]</var> row for black pieces
+     * - <var>$rows[1]</var> row for white pieces
+     * @throws GameInitializationException if the number of possible rows for setting the piece is not equal to two.
+     */
     private function addPiece(Player $player, Board $board, Piece $piece, int $col, array $rows): void
     {
         if (count($rows) != 2) {
