@@ -25,12 +25,18 @@ abstract class AbstractPiece implements Piece
     protected Color $color;
 
     /**
+     * @var string literal representation of a piece in chess notation.
+     */
+    protected string $pieceDesignation;
+
+    /**
      * AbstractPiece constructor.
      * @param Color $color piece color
      */
-    public function __construct(Color $color)
+    public function __construct(Color $color, string $pieceDesignation)
     {
         $this->color = $color;
+        $this->pieceDesignation = $pieceDesignation;
     }
 
     /**
@@ -39,16 +45,6 @@ abstract class AbstractPiece implements Piece
     public function getColor(): Color
     {
         return $this->color;
-    }
-
-    /**
-     * @param string $letter the letter that designates the piece.
-     * @return string the string value of the piece,
-     * where the first letter is a color and the second is a type ({@example "WB" — white bishop}).
-     */
-    protected function toStr(string $letter): string
-    {
-        return $this->getColor()->getName()[0] . $letter;
     }
 
     public function possibleMoves(Board $board, Position $position): array
@@ -205,5 +201,14 @@ abstract class AbstractPiece implements Piece
         } catch (OutOfBoardException $e) {
             return false;
         }
+    }
+
+    /**
+     * @return string the string value of the piece,
+     * where the first letter is a color and the second is a type ({@example "WB" — white bishop}).
+     */
+    public function __toString()
+    {
+        return $this->getColor()->getName()[0] . $this->pieceDesignation;
     }
 }

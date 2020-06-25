@@ -5,6 +5,7 @@ namespace app\chess\pieces;
 
 use app\chess\board\Board;
 use app\chess\board\Position;
+use app\chess\Color;
 use utils\Pair;
 
 /**
@@ -17,6 +18,15 @@ use utils\Pair;
 class Pawn extends AbstractPiece
 {
     private static ?array $SINGLE_MOVES = null;
+
+    /**
+     * Pawn constructor.
+     * @param Color $color piece color
+     */
+    public function __construct(Color $color)
+    {
+        parent::__construct($color, "P");
+    }
 
     /**
      * Initialization of a static array that contains
@@ -80,14 +90,6 @@ class Pawn extends AbstractPiece
             }
         }
         return $possibleMoves;
-    }
-
-    /**
-     * @return string string representation of the pawn ({@example "WP" — white pawn}).
-     */
-    public function __toString(): string
-    {
-        return $this->toStr("P");
     }
 }
 

@@ -6,6 +6,7 @@ namespace app\chess\pieces;
 
 use app\chess\board\Board;
 use app\chess\board\Position;
+use app\chess\Color;
 use utils\Pair;
 
 /**
@@ -20,11 +21,12 @@ class Bishop extends AbstractPiece
     private static ?array $SINGLE_MOVES = null;
 
     /**
-     * @return string string representation of the bishop ({@example "WB" — white bishop}).
+     * Bishop constructor.
+     * @param Color $color piece color
      */
-    public function __toString(): string
+    public function __construct(Color $color)
     {
-        return $this->toStr("B");
+        parent::__construct($color, "B");
     }
 
     public function attackedMoves(Board $board, Position $position): array

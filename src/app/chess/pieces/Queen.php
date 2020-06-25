@@ -21,6 +21,15 @@ class Queen extends AbstractPiece
     private static array $bishops;
 
     /**
+     * Queen constructor.
+     * @param Color $color piece color
+     */
+    public function __construct(Color $color)
+    {
+        parent::__construct($color, "Q");
+    }
+
+    /**
      * Initialization of static fields that contain information
      * about the minimum possible moves of the <var>Queen</var> as an {@see Bishop} and as a {@see Rook}.
      */
@@ -36,14 +45,6 @@ class Queen extends AbstractPiece
         if (!isset($bishop)) {
             $bishop = new Bishop($color);
         }
-    }
-
-    /**
-     * @return string string representation of the queen ({@example "WQ" — white queen}).
-     */
-    public function __toString(): string
-    {
-        return $this->toStr("Q");
     }
 
     public function attackedMoves(Board $board, Position $position): array

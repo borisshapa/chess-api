@@ -5,6 +5,7 @@ namespace app\chess\pieces;
 
 use app\chess\board\Board;
 use app\chess\board\Position;
+use app\chess\Color;
 use utils\Pair;
 
 /**
@@ -34,11 +35,12 @@ class King extends AbstractPiece
     }
 
     /**
-     * @return string string representation of the king ({@example "WK" — white king}).
+     * King constructor.
+     * @param Color $color piece color
      */
-    public function __toString(): string
+    public function __construct(Color $color)
     {
-        return $this->toStr("K");
+        parent::__construct($color, "K");
     }
 
     private function removeDangerousMoves(array &$possibleMoves, Board $board)

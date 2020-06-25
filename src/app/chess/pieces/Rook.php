@@ -6,6 +6,7 @@ namespace app\chess\pieces;
 
 use app\chess\board\Board;
 use app\chess\board\Position;
+use app\chess\Color;
 use utils\Pair;
 
 /**
@@ -18,6 +19,15 @@ use utils\Pair;
 class Rook extends AbstractPiece
 {
     private static ?array $SINGLE_MOVES = null;
+
+    /**
+     * Rook constructor.
+     * @param Color $color piece color
+     */
+    public function __construct(Color $color)
+    {
+        parent::__construct($color, "R");
+    }
 
     /**
      * Initialization of a static array that contains
@@ -34,14 +44,6 @@ class Rook extends AbstractPiece
                 new Pair(0, -1)
             );
         }
-    }
-
-    /**
-     * @return string string representation of the rook ({@example "WR" — white rook}).
-     */
-    public function __toString(): string
-    {
-        return $this->toStr("R");
     }
 
     public function attackedMoves(Board $board, Position $position): array

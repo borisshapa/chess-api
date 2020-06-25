@@ -6,6 +6,7 @@ namespace app\chess\pieces;
 
 use app\chess\board\Board;
 use app\chess\board\Position;
+use app\chess\Color;
 use utils\Pair;
 
 /**
@@ -18,6 +19,15 @@ use utils\Pair;
 class Knight extends AbstractPiece
 {
     private static ?array $SINGLE_MOVES = null;
+
+    /**
+     * Knight constructor.
+     * @param Color $color piece color
+     */
+    public function __construct(Color $color)
+    {
+        parent::__construct($color, "N");
+    }
 
     /**
      * Initialization of a static array that contains
@@ -41,14 +51,6 @@ class Knight extends AbstractPiece
     public function normalMoves(Board $board, Position $position): array
     {
         return $this->singleNormalMoves($board, $position, self::$SINGLE_MOVES);
-    }
-
-    /**
-     * @return string string representation of the knight ({@example "WN" — white knight}).
-     */
-    public function __toString(): string
-    {
-        return $this->toStr("N");
     }
 }
 
