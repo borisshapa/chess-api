@@ -69,7 +69,7 @@ class ChessController implements Controller
      * about the game with the specified id in the database.
      * A successful response is as follows. <br>
      * <code>{
-     *  "status" : true,
+ *      "id": 21,
      *  "players" : {"white":"Bob","black":"Alice"},
      *  "current" : "white",
      *  "board" : [
@@ -80,7 +80,8 @@ class ChessController implements Controller
      *  ["__","__","__","__","__","__","__","__"],
      *  ["__","__","__","__","__","__","__","__"],
      *  ["WP","WP","WP","WP","WP","WP","WP","WP"],
-     *  ["WR","WN","WB","WQ","WK","WB","WN","WR"]]
+     *  ["WR","WN","WB","WQ","WK","WB","WN","WR"]],
+     *  "status" : true,
      * }</code> <br>
      * Returns a bad response if the id parameter was not passed
      * to the api on the corresponding route or the incorrect id was passed.
@@ -122,6 +123,7 @@ class ChessController implements Controller
         }
 
         $data = [
+            "id" => $id,
             "players" => array(
                 "white" => $player1->getName(),
                 "black" => $player2->getName()),

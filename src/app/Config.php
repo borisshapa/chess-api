@@ -19,6 +19,10 @@ const PORT = "8080";
  */
 const USERNAME = "root";
 /**
+ * Password for accessing the database.
+ */
+const PASSWORD = "";
+/**
  * The namespace of the controller classes that process requests to api.
  */
 const PATH_TO_CONTROLLERS = "app\mvc\controllers\\";
