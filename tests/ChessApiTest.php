@@ -280,6 +280,6 @@ class ChessApiTest extends TestCase
         $data = self::decodeResponse($response);
 
         self::assertFalse(self::responseIsOk($data));
-        self::assertEquals("The query parameter was not found.", $data->message);
+        self::assertEquals("The 'to' parameter was not found.", $data->message);
     }
 }

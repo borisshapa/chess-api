@@ -95,14 +95,15 @@ class Router
                     $params = $this->request->getParams();
                     $pass = array();
                     foreach ($rm->getParameters() as $param) {
-                        $passedParam = &$params[$param->getName()];
+                        $paramName = $param->getName();
+                        $passedParam = &$params[$paramName];
                         if (isset($passedParam)) {
                             array_push($pass, $passedParam);
                         } else {
                             try {
                                 array_push($pass, $param->getDefaultValue());
                             } catch (ReflectionException $e) {
-                                return self::badResponse(400, "The query parameter was not found.");
+                                return self::badResponse(400, "The '{$paramName}' parameter was not found.");
                             }
                         }
                     }
