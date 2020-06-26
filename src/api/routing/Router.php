@@ -65,6 +65,7 @@ class Router
 
     /**
      * Returns the result of processing the request passed to the constructor or error message in JSON format.
+     * If it was not possible to find a suitable route or some parameters are missing, a bad answer is returned.
      * @return false|mixed|string a JSON encoded string on success or <b>FALSE</b> on failure.
      */
     public function getContent()
@@ -92,7 +93,20 @@ class Router
                         return self::badResponse(400, "Unsupported controller or method");
                     }
                     $params = $this->request->getParams();
-                    return $rm->invokeArgs($controller, $params);
+                    $pass = array();
+                    foreach ($rm->getParameters() as $param) {
+                        $passedParam = &$params[$param->getName()];
+                        if (isset($passedParam)) {
+                            array_push($pass, $passedParam);
+                        } else {
+                            try {
+                                array_push($pass, $param->getDefaultValue());
+                            } catch (ReflectionException $e) {
+                                return self::badResponse(400, "The query parameter was not found.");
+                            }
+                        }
+                    }
+                    return $rm->invokeArgs($controller, $pass);
                 }
                 return self::badResponse(400, "Method " . $methodName . " not found");
             } else {

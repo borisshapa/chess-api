@@ -83,19 +83,14 @@ class ChessController implements Controller
      *  ["WR","WN","WB","WQ","WK","WB","WN","WR"]],
      *  "status" : true,
      * }</code> <br>
-     * Returns a bad response if the id parameter was not passed
-     * to the api on the corresponding route or the incorrect id was passed.
+     * Returns a bad response if the incorrect id was passed.
      * @param int|null $id id of the row in the database table in which information about the necessary game is stored.
      * @return false|string JSON encoded response on success or <b>FALSE</b> on failure.
      * @see Router::badResponse()
      * @see Router::successfulResponse()
      */
-    public function status(int $id = null)
+    public function status(int $id)
     {
-        if (!isset($id)) {
-            return Router::badResponse(400, "'id' parameter is expected");
-        }
-
         $chessModel = new GameModel();
         try {
             $data = $chessModel->getById($id);
@@ -147,8 +142,8 @@ class ChessController implements Controller
      * id of the row of the database table where the changes were made and the message about the success move or
      * victory of one of the players is returned. <br>
      *
-     * In the case that one of the following parameters is not passed in the api: <var>id</var>, <var>from</var>, <var>to</var>
-     * the row with the specified id was not found or the move is contrary to the rules, a bad response is returned. <br>
+     * In the case that the row with the specified id was not found
+     * or the move is contrary to the rules, a bad response is returned. <br>
      *
      * Bad response contains status (<var>false</var>) and error message.
      * @param int|null $id id of the game in the database in which you want to make a move.
@@ -163,12 +158,8 @@ class ChessController implements Controller
      * @see Router::badResponse()
      * @see Game::move()
      */
-    public function move(int $id = null, string $from = null, string $to = null, string $promotion = null)
+    public function move(int $id, string $from, string $to, string $promotion = null)
     {
-        if (!isset($id) || !isset($from) || !isset($to)) {
-            return Router::badResponse(400, "'id', 'from', 'to' parameters are expected");
-        }
-
         $chessModel = new GameModel();
         try {
             $data = $chessModel->getById($id);
@@ -222,12 +213,8 @@ class ChessController implements Controller
      * @see Router::badResponse()
      * @see Router::successfulResponse()
      */
-    public function finish(int $id = null)
+    public function finish(int $id)
     {
-        if (!isset($id)) {
-            return Router::badResponse(400, "'id' parameter is expected");
-        }
-
         $chessModel = new GameModel();
         $chessModel->delete($id);
         return Router::successfulResponse(200,
